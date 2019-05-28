@@ -31,31 +31,6 @@ public class PostsViewModel extends ViewModel
 
     public void getPostsByPage(int page)
     {
-        /*postsRepository.getWeatherByLocation("story",page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonElement>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(JsonElement jsonElement) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });*/
-
-
-
         disposables.add(postsRepository.getPostsByPage("story",page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -100,7 +100,7 @@ public class HomeActivity  extends AppCompatActivity implements Callback
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPostList.clear();
+
                 viewModel.getPostsByPage(1);
 
             }
@@ -131,7 +131,7 @@ public class HomeActivity  extends AppCompatActivity implements Callback
                 try {
                     System.out.println("---->" + apiResponse.data);
                     Hits posts = gson.fromJson(apiResponse.data, Hits.class);
-                    System.out.println("--->hello" + posts.getHits().get(0).getTitle());
+                    System.out.println("--->hello" + posts.getHits().size());
                     updateUi(posts.getHits());
                 }
                 catch (Exception e)
@@ -165,6 +165,8 @@ public class HomeActivity  extends AppCompatActivity implements Callback
 
     private void updateUi(List<Post> hits)
     {
+        mPostList.clear();
+        mPostAdaptor.notifyDataSetChanged();
         for (Post post : hits) {
             mPostList.add(post);
         }
@@ -173,6 +175,7 @@ public class HomeActivity  extends AppCompatActivity implements Callback
         if(mSwipeRefreshLayout.isRefreshing())
         {
             mSwipeRefreshLayout.setEnabled(false);
+
         }
     }
 

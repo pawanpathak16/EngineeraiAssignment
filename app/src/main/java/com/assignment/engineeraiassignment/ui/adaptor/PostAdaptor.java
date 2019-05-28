@@ -60,7 +60,7 @@ public class PostAdaptor extends RecyclerView.Adapter<PostAdaptor.MyViewHolder> 
     {
         Post post = postList.get(position);
         holder.title.setText(post.getTitle());
-        holder.createdAt.setText(new Date(post.getCreated_at()).toString());
+        holder.createdAt.setText(post.getCreated_at());
         holder.toggleButton.setChecked(post.isEnable());
         holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

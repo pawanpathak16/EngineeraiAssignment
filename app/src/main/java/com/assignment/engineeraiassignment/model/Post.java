@@ -5,7 +5,7 @@ import java.util.Date;
 public class Post
 {
     private String title;
-    private Long created_at_i;
+    private String created_at;
     private boolean isEnable;
 
     public String getTitle() {
@@ -16,12 +16,12 @@ public class Post
         this.title = title;
     }
 
-    public Long getCreated_at() {
-        return created_at_i;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setCreated_at(Long created_at) {
-        this.created_at_i = created_at;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
     public boolean isEnable() {
