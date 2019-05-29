@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -44,6 +46,7 @@ import static com.assignment.engineeraiassignment.data.remote.api.Status.SUCCESS
 public class HomeActivity  extends AppCompatActivity implements Callback
 {
     int count= 0;
+    int page=1;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.swipeContainer)
@@ -65,6 +68,10 @@ public class HomeActivity  extends AppCompatActivity implements Callback
     @Inject
     ViewModelFactory viewModelFactory;
     PostsViewModel viewModel;
+
+
+    private int visibleThreshold = 9;
+    private int lastVisibleItem, totalItemCount;
 
 
     @Override
@@ -100,14 +107,40 @@ public class HomeActivity  extends AppCompatActivity implements Callback
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+               mPostList.clear();
+                viewModel.getPostsByPage(page);
 
-                viewModel.getPostsByPage(1);
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                System.out.println("dx "+dx);
+                System.out.println("dy"+dy);
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                System.out.println("total item count "+totalItemCount);
+                System.out.println("last visible item "+lastVisibleItem);
+
+                if(totalItemCount <= lastVisibleItem+1)
+                {
+                    System.out.println("load more calling ");
+                    page++;
+                    loadmore();
+                }
 
             }
         });
 
 
 
+    }
+
+    private void loadmore()
+    {
+    viewModel.getPostsByPage(page);
     }
 
     @Override
@@ -165,18 +198,29 @@ public class HomeActivity  extends AppCompatActivity implements Callback
 
     private void updateUi(List<Post> hits)
     {
-        mPostList.clear();
-        mPostAdaptor.notifyDataSetChanged();
-        for (Post post : hits) {
-            mPostList.add(post);
-        }
-
-        mPostAdaptor.notifyDataSetChanged();
-        if(mSwipeRefreshLayout.isRefreshing())
+       // mPostList.clear();
+        if(!mPostList.isEmpty())
         {
-            mSwipeRefreshLayout.setEnabled(false);
-
+            for (Post post : hits) {
+                mPostList.add(post);
+            }
         }
+        else{
+            for (Post post : hits) {
+                mPostList.add(post);
+            }
+            if(mSwipeRefreshLayout.isRefreshing())
+            {
+                mSwipeRefreshLayout.setEnabled(false);
+
+            }
+        }
+
+        mPostAdaptor.notifyDataSetChanged();
+
+
+       // mPostAdaptor.notifyDataSetChanged();
+
     }
 
     @Override
